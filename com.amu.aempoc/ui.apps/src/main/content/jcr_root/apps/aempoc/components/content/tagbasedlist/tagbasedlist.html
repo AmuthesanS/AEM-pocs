@@ -1,0 +1,10 @@
+Edit here
+<div data-sly-use.model="com.amu.aempoc.core.models.TagBasedList">
+    <ul data-sly-list.page="${model.pageList}" data-sly-unwrap>
+        <li>
+            <h2>${page.title}</h2>
+            <p>${page.properties.jcr:description}</p>
+            <img src="${page.path}/_jcr_content/image/file.img.jpg" />
+        </li>
+    </ul>
+</div>
