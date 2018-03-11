@@ -1,10 +1,15 @@
 Edit here
 <div data-sly-use.model="com.amu.aempoc.core.models.TagBasedList">
-    <ul data-sly-list.page="${model.pageList}" data-sly-unwrap>
-        <li>
-            <h2>${page.title}</h2>
-            <p>${page.properties.jcr:description}</p>
-            <img src="${page.path}/_jcr_content/image/file.img.jpg" />
-        </li>
-    </ul>
+	<p>
+		Found <strong>${model.pageList.size}</strong> results
+	</p>
+	<ul data-sly-list.page="${model.pageList}" data-sly-unwrap>
+		<li><a href="${page.path}.html">
+				<h2>${page.title}</h2>
+		</a>
+			<p>${page.properties.jcr:description}</p> <img
+			src="${page.path}/_jcr_content/image/file.img.jpg" /></li>
+	</ul>
+	<div class="load-more" data-sly-test="${model.pageList.size > 6}">LOAD
+		MORE</div>
 </div>

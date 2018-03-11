@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.jcr.query.Query;
 
@@ -29,21 +30,48 @@ public class TagBasedList {
 	private String[] tags;
 
 	@Inject
+	@Default(values = { "" })
+	private String[] ignoreTags;
+
+	@Inject
 	@Default(values = "")
 	private String rootPath;
 
-	public List<Page> getPageList() {
+	@Inject
+	@Default(values = "")
+	private String sortBy;
+
+	@Inject
+	@Default(values = "")
+	private String sortDirection;
+
+	private List<Page> pageList = new ArrayList<>();
+
+	@PostConstruct
+	protected void init() {
 		final StringBuffer queryTag = new StringBuffer();
 		for (String item : tags) {
 			queryTag.append(" OR s.[cq:tags] like '" + item + "'");
 		}
+
+		final StringBuffer ignoreQueryTag = new StringBuffer();
+		for (String item : ignoreTags) {
+			ignoreQueryTag.append(" AND NOT s.[cq:tags] like '" + item + "'");
+		}
+
+		if (!"".equals(sortDirection)) {
+			sortDirection = " ORDER BY s.[" + sortBy + "] " + sortDirection;
+		}
+
 		String query = "SELECT * FROM [cq:PageContent] AS s WHERE ISDESCENDANTNODE([" + rootPath + "]) AND ("
-				+ queryTag.substring(4) + ")";
+				+ queryTag.substring(4) + ")" + ignoreQueryTag + sortDirection;
 		Iterator<Resource> resourceList = resourceResolver.findResources(query, Query.JCR_SQL2);
-		List<Page> pageList = new ArrayList<Page>();
 		resourceList.forEachRemaining(item -> {
 			pageList.add(pageManager.getContainingPage(item));
 		});
+	}
+
+	public List<Page> getPageList() {
 		return pageList;
 	}
 }

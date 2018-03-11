@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-	jcr:primaryType="cq:Dialog" title="Properties" xtype="panel">
+	jcr:primaryType="cq:Dialog" title="Tag based list" xtype="panel">
 	<items jcr:primaryType="cq:WidgetCollection">
-		<tag jcr:primaryType="cq:Widget" fieldLabel="Tags" name="./tags"
+		<tags jcr:primaryType="cq:Widget" fieldLabel="Tags" name="./tags"
 			xtype="tags" />
-		<rootPath jcr:primaryType="cq:Widget" fieldLabel="Root path" name="./rootPath"
-			xtype="pathfield" />
+		<ignoretags jcr:primaryType="cq:Widget" fieldLabel="Ignore tags"
+			name="./ignoreTags" xtype="tags" />
+		<rootPath jcr:primaryType="cq:Widget" fieldLabel="Root path"
+			name="./rootPath" xtype="pathfield" />
+
+		<sortby jcr:primaryType="cq:Widget" fieldLabel="Sort by" name="./sortBy"
+			xtype="selection" type="select">
+			<options jcr:primaryType="cq:WidgetCollection">
+				<title jcr:primaryType="nt:unstructured" text="Title" value="jcr:title" />
+				<createddate jcr:primaryType="nt:unstructured" text="Created date"
+					value="jcr:created" />
+			</options>
+		</sortby>
+		<sortorder jcr:primaryType="cq:Widget" fieldLabel="Sorting direction"
+			name="./sortDirection" xtype="selection" type="select">
+			<options jcr:primaryType="cq:WidgetCollection">
+				<ascending jcr:primaryType="nt:unstructured" text="Ascending"
+					value="ASC" />
+				<descending jcr:primaryType="nt:unstructured" text="Decending"
+					value="DESC" />
+			</options>
+		</sortorder>
 	</items>
 </jcr:root>

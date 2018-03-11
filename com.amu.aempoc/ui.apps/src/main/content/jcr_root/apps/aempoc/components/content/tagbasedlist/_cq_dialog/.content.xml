@@ -2,7 +2,7 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
 	xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
 	xmlns:nt="http://www.jcp.org/jcr/nt/1.0" jcr:primaryType="nt:unstructured"
-	jcr:title="Properties" sling:resourceType="cq/gui/components/authoring/dialog">
+	jcr:title="Tag based list" sling:resourceType="cq/gui/components/authoring/dialog">
 	<content jcr:primaryType="nt:unstructured"
 		sling:resourceType="granite/ui/components/foundation/container">
 		<layout jcr:primaryType="nt:unstructured"
@@ -11,12 +11,31 @@
 			<column jcr:primaryType="nt:unstructured"
 				sling:resourceType="granite/ui/components/foundation/container">
 				<items jcr:primaryType="nt:unstructured">
-					<tag jcr:primaryType="nt:unstructured"
-						sling:resourceType="cq/gui/components/common/tagspicker"
+					<tags jcr:primaryType="nt:unstructured" sling:resourceType="cq/gui/components/common/tagspicker"
 						fieldLabel="Tags" name="./tags" />
+					<ignoretags jcr:primaryType="nt:unstructured"
+						sling:resourceType="cq/gui/components/common/tagspicker"
+						fieldLabel="Ignore tags" name="./ignoreTags" />
 					<rootpath jcr:primaryType="nt:unstructured"
 						sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
 						fieldLabel="Root path" name="./rootPath" />
+					<sortby jcr:primaryType="nt:unstructured" fieldLabel="Sort by"
+						name="./sortBy" sling:resourceType="granite/ui/components/foundation/form/select">
+						<items jcr:primaryType="nt:unstructured">
+							<title text="Title" value="jcr:title" jcr:primaryType="nt:unstructured" />
+							<createddate text="Created date" value="jcr:created"
+								jcr:primaryType="nt:unstructured" />
+						</items>
+					</sortby>
+					<sortorder jcr:primaryType="nt:unstructured" fieldLabel="Sort by"
+						name="./sortDirection" sling:resourceType="granite/ui/components/foundation/form/select">
+						<items jcr:primaryType="nt:unstructured">
+							<title jcr:primaryType="nt:unstructured" text="Ascending"
+								value="ASC" />
+							<createddate jcr:primaryType="nt:unstructured" text="Decending"
+								value="DESC" />
+						</items>
+					</sortorder>
 				</items>
 			</column>
 		</items>

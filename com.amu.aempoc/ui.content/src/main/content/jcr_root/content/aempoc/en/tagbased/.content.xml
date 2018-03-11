@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2018-03-10T07:24:03.895+01:00"
+        cq:lastModifiedBy="admin"
+        cq:template="/apps/aempoc/templates/page-content"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="tagbased"
+        sling:resourceType="aempoc/components/structure/page">
+        <logo
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="aempoc/components/structure/logo"/>
+        <title
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="aempoc/components/content/title"/>
+        <topnav
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="aempoc/components/structure/topnav"/>
+        <par
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="wcm/foundation/components/parsys">
+            <text
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="aempoc/components/content/text"
+                text="&lt;p>This is a content page&lt;/p>"
+                textIsRich="true"/>
+            <tagbasedlist
+                jcr:created="{Date}2018-03-10T07:23:06.822+01:00"
+                jcr:createdBy="admin"
+                jcr:lastModified="{Date}2018-03-10T07:24:03.891+01:00"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="aempoc/components/content/tagbasedlist"
+                rootPath="/content/geometrixx-media/en"
+                tags="[geometrixx-media:entertainment/movies]"/>
+        </par>
+    </jcr:content>
+</jcr:root>
