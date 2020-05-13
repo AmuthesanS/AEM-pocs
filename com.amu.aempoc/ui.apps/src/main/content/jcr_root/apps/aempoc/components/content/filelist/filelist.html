@@ -1,8 +1,19 @@
 <pre data-sly-use.model="com.amu.aempoc.core.models.FileListModel">
-<div data-sly-list="${model.alphabets}">
-	<span><a href="#">${item}</a></span>
-</div>
-<ul data-sly-list="${model.assets}">
-<li>${item.name}<a href="${item.path}">Download asset</a></li>
-</ul>
-</pre>
+	<div data-sly-list="${model.alphabets}">
+		<span><a href="#">${item}</a></span>
+	</div>
+	<ul data-sly-list.alphabet="${model.assets}">
+		<li>
+			<span class="alphabet">${alphabet}</span>
+
+            <p data-sly-test="${model.assets[alphabet].size == 0}">
+					No items in category
+            </p>
+			<ul data-sly-list.asset="${model.assets[alphabet]}">
+				<li>
+					<a href="${asset.path}">${asset.metadata.dc:title || asset.name}</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</pre> 
