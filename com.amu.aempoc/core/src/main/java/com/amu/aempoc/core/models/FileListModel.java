@@ -1,12 +1,11 @@
 package com.amu.aempoc.core.models;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.sling.api.resource.Resource;
@@ -19,8 +18,6 @@ import com.day.cq.dam.api.Asset;
 @Model(adaptables = Resource.class)
 public class FileListModel {
 
-	char[] alphabets = "abcdefghijklmnopqrstuvwxyz#".toCharArray();
-
 	@Inject
 	@Default(values = "/content/dam")
 	protected String assetsRoot;
@@ -28,30 +25,13 @@ public class FileListModel {
 	@Inject
 	private ResourceResolver resolver;
 
-	public char[] getAlphabets() {
-		return alphabets;
-	}
+	private char[] alphabets = "abcdefghijklmnopqrstuvwxyz#".toCharArray();
 
-	public Map<Character, Set<Asset>> getAssets() {
-		Map<Character, Set<Asset>> answer = new LinkedHashMap<>();
+	private Map<Character, List<Asset>> assetList = new HashMap<>();
+
+	@PostConstruct
+	protected void init() {
 		Resource parentRes = resolver.getResource(assetsRoot);
-		for (char alphabet : alphabets) {
-			SortedSet<Asset> assetsList = new TreeSet<>(new Comparator<Asset>() {
-				@Override
-				public int compare(Asset o1, Asset o2) {
-					int ans;
-					String title1 = o1.getMetadataValue("dc:title");
-					String title2 = o1.getMetadataValue("dc:title");
-					if (title1 != null && title2 != null) {
-						ans = title1.compareTo(title2);
-					} else {
-						ans = o1.getName().compareTo(o2.getName());
-					}
-					return ans;
-				}
-			});
-			answer.put(alphabet, assetsList);
-		}
 		resolver.getChildren(parentRes).forEach(resource -> {
 			if (resource.isResourceType("dam:Asset")) {
 				Asset currentAsset = resource.adaptTo(Asset.class);
@@ -62,15 +42,32 @@ public class FileListModel {
 				} else {
 					assetStartChar = resource.getName().toLowerCase().charAt(0);
 				}
-
-				Set<Asset> currentSet = answer.get(assetStartChar);
-				if (currentSet != null) {
-					currentSet.add(currentAsset);
+				if (Character.isAlphabetic(assetStartChar)) {
+					assetList.put(assetStartChar, getOrCreateList(assetStartChar, currentAsset));
 				} else {
-					answer.get('#').add(currentAsset);
+					assetList.put('#', getOrCreateList(assetStartChar, currentAsset));
 				}
 			}
 		});
-		return answer;
 	}
+
+	private List<Asset> getOrCreateList(char assetStartChar, Asset currentAsset) {
+		List<Asset> list;
+		if (assetList.get(assetStartChar) != null) {
+			list = assetList.get(assetStartChar);
+		} else {
+			list = new ArrayList<>();
+		}
+		list.add(currentAsset);
+		return list;
+	}
+
+	public char[] getAlphabets() {
+		return alphabets;
+	}
+
+	public Map<Character, List<Asset>> getAssetList() {
+		return assetList;
+	}
+
 }
