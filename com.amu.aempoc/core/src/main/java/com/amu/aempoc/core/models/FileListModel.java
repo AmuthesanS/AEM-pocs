@@ -1,5 +1,6 @@
 package com.amu.aempoc.core.models;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -56,7 +57,8 @@ public class FileListModel {
 		if (assetList.get(assetStartChar) != null) {
 			list = assetList.get(assetStartChar);
 		} else {
-			list = new TreeSet<>();
+			Comparator<Asset> assetNameComparator = Comparator.comparing(Asset::getName);
+			list = new TreeSet<>(assetNameComparator);
 		}
 		list.add(currentAsset);
 		return list;

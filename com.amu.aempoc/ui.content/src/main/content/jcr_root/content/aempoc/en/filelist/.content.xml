@@ -20,8 +20,7 @@
 				text="&lt;p>This is a file list component&lt;/p>" textIsRich="true" />
 			<filelist jcr:primaryType="nt:unstructured"
 				sling:resourceType="aempoc/components/content/filelist"
-				rootPath="/content/geometrixx-media/en"
-				tags="[geometrixx-media:entertainment/movies]" />
+				assetsRoot="/content/dam/we-retail/en/features" />
 		</par>
 	</jcr:content>
 </jcr:root>
