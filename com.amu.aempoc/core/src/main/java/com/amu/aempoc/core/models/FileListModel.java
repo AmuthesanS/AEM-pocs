@@ -1,9 +1,9 @@
 package com.amu.aempoc.core.models;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -27,7 +27,7 @@ public class FileListModel {
 
 	private char[] alphabets = "abcdefghijklmnopqrstuvwxyz#".toCharArray();
 
-	private Map<Character, List<Asset>> assetList = new HashMap<>();
+	private Map<Character, SortedSet<Asset>> assetList = new HashMap<>();
 
 	@PostConstruct
 	protected void init() {
@@ -51,12 +51,12 @@ public class FileListModel {
 		});
 	}
 
-	private List<Asset> getOrCreateList(char assetStartChar, Asset currentAsset) {
-		List<Asset> list;
+	private SortedSet<Asset> getOrCreateList(char assetStartChar, Asset currentAsset) {
+		SortedSet<Asset> list;
 		if (assetList.get(assetStartChar) != null) {
 			list = assetList.get(assetStartChar);
 		} else {
-			list = new ArrayList<>();
+			list = new TreeSet<>();
 		}
 		list.add(currentAsset);
 		return list;
@@ -66,7 +66,7 @@ public class FileListModel {
 		return alphabets;
 	}
 
-	public Map<Character, List<Asset>> getAssetList() {
+	public Map<Character, SortedSet<Asset>> getAssetList() {
 		return assetList;
 	}
 
