@@ -10,7 +10,7 @@
            property={
     
                    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-                   "sling.servlet.paths="+ "/services/dxp-interstitial-list" 
+                   "sling.servlet.resourceTypes="+ "cq/Page" 
            })
 
 
@@ -85,21 +85,12 @@ public class InterstitialServlet extends SlingSafeMethodsServlet {
 		ResourceResolver resolver = request.getResourceResolver();
 
 		// Retrieving the current page path from the request
-		String currentPagePath = request.getParameter(PAGE_PARAMETER);
+		Resource currentPageResource = request.getResource();
 
 		interstitialJsonOptions.append(InterstitialUtils.getJsonFromInterstitialReference(PLEASE_SELECT));
 
-		log.info("currentPagePath : {}", currentPagePath);
-
 		// Validate if the current page path is not null
-		if (currentPagePath != null) {
-
-			// Cleaning the current page path to remove html extension and/or
-			// jcr:content node extension
-			currentPagePath = InterstitialUtils.cleanPagePath(currentPagePath);
-
-			// Resolving the current page path to a resource
-			Resource currentPageResource = resolver.resolve(currentPagePath);
+		if (currentPageResource != null) {
 
 			// Adapting the above resource to page
 			Page currentPage = currentPageResource.adaptTo(Page.class);
