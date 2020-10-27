@@ -1,0 +1,169 @@
+/**
+ * 
+ * @author n163064 Servlet definition to retrieve the list of Interstitial HTML
+ *         IDs from Interstitial Configuration Page Property of the current page
+ *         and send in the response
+ *
+ */
+ 
+@Component(service=Servlet.class,
+           property={
+    
+                   "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+                   "sling.servlet.paths="+ "/services/dxp-interstitial-list" 
+           })
+
+
+public class InterstitialServlet extends SlingSafeMethodsServlet {
+
+	/**
+	 * Default serial version ID for the Servlet
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Log for the InterstitialServlet
+	 */
+	private static final Logger log = LoggerFactory.getLogger(InterstitialServlet.class);
+
+	/**
+	 * Variable to retrieve the current page path from the request
+	 */
+	public static final String PAGE_PARAMETER = "page";
+
+	/**
+	 * Variable to retrieve the value given of Interstitial Configuration Page
+	 * provided by author in the Page properties dialog
+	 */
+	public static final String INTERSTITIAL_CONFIG_PAGE_PROPERTY = "interstitialConfigPage";
+
+	/**
+	 * Variable to retrieve the value given of Servlet Content Type in the
+	 * response of the servlet
+	 */
+	public static final String SERVLET_CONTENT_TYPE = "application/json";
+
+	/**
+	 * Variable to set the character encoding in the response of the servlet
+	 */
+	public static final String SERVLET_ENCODING = "utf-8";
+
+	/**
+	 * Variable at the Start of the Interstitial JSON Options
+	 */
+	public static final char INTERSTITIAL_JSON_OPTIONS_OPEN = '[';
+
+	/**
+	 * Variable at the Start of the Interstitial JSON Options
+	 */
+	public static final char INTERSTITIAL_JSON_OPTIONS_CLOSE = ']';
+
+	/**
+	 * Variable for adding the default value "Please Select" to the drop down.
+	 */
+	public static final String PLEASE_SELECT = "Please Select";
+
+	/**
+	 * Method doGet for the servlet processing.
+	 * 
+	 * @param request
+	 *            SlingHttpServletRequest object with the request
+	 * @param response
+	 *            SlingHttpServletResponse object with the response
+	 */
+	@Override
+	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+
+		log.info("Inside InterstitialServlet doGet Method");
+
+		// Initializing a String Builder for the response
+		StringBuilder interstitialJsonOptions = new StringBuilder();
+
+		interstitialJsonOptions.append(INTERSTITIAL_JSON_OPTIONS_OPEN);
+
+		// Retrieving the resource resolver from the request
+		ResourceResolver resolver = request.getResourceResolver();
+
+		// Retrieving the current page path from the request
+		String currentPagePath = request.getParameter(PAGE_PARAMETER);
+
+		interstitialJsonOptions.append(InterstitialUtils.getJsonFromInterstitialReference(PLEASE_SELECT));
+
+		log.info("currentPagePath : {}", currentPagePath);
+
+		// Validate if the current page path is not null
+		if (currentPagePath != null) {
+
+			// Cleaning the current page path to remove html extension and/or
+			// jcr:content node extension
+			currentPagePath = InterstitialUtils.cleanPagePath(currentPagePath);
+
+			// Resolving the current page path to a resource
+			Resource currentPageResource = resolver.resolve(currentPagePath);
+
+			// Adapting the above resource to page
+			Page currentPage = currentPageResource.adaptTo(Page.class);
+
+			// Validate if the current page is not null and the interstitial
+			// configuration page is not empty
+			if (currentPage != null && StringUtils.isNotEmpty(
+					WCMUtils.getInheritedProperty(currentPage, resolver, INTERSTITIAL_CONFIG_PAGE_PROPERTY))) {
+
+				// Getting the list of HTML IDs of all the components in the
+				// configuration page
+				List<String> interstitialList = InterstitialUtils.getInterstitialList(resolver,
+						WCMUtils.getInheritedProperty(currentPage, resolver, INTERSTITIAL_CONFIG_PAGE_PROPERTY));
+
+				log.info("configPagePath : {}",
+						WCMUtils.getInheritedProperty(currentPage, resolver, INTERSTITIAL_CONFIG_PAGE_PROPERTY));
+
+				// Initializing an iterator string to iterate over the list of
+				// interstitial html IDs
+				Iterator<String> interstitialListIter = interstitialList.iterator();
+
+				// Iterate over list of interstitial html IDs
+				while (interstitialListIter.hasNext()) {
+
+					// Appending the json value from the interstitial html IDs
+					interstitialJsonOptions
+							.append(InterstitialUtils.getJsonFromInterstitialReference(interstitialListIter.next()));
+
+				}
+
+			}
+
+			log.info("Exiting  InterstitialServlet doGet Method");
+		}
+
+		// Retrieve the ID of the last character in
+		// interstitialJsonOptions object
+		int interstitialJsonOptionsLastChar = interstitialJsonOptions.length() - 1;
+
+		// Delete the comma character in the end to convert the
+		// interstitialJsonOptions object to a valid JSON
+		interstitialJsonOptions.deleteCharAt(interstitialJsonOptionsLastChar);
+
+		interstitialJsonOptions.append(INTERSTITIAL_JSON_OPTIONS_CLOSE);
+
+		// Setting the content type to response of the servlet
+		response.setContentType(SERVLET_CONTENT_TYPE);
+
+		// Setting the character stream encoding to response of the servlet
+		response.setCharacterEncoding(SERVLET_ENCODING);
+
+		// Initializing the PrintWriter object to print the character stream in
+		// the response
+		PrintWriter printWriter = response.getWriter();
+
+		// Add the json value of the interstitial html IDs to the response
+		// stream
+		printWriter.write(interstitialJsonOptions.toString());
+
+		// Flushing the stream
+		printWriter.flush();
+
+		// Closing the stream
+		printWriter.close();
+	}
+
+}
