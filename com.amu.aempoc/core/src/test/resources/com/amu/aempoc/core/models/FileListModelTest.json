@@ -1,0 +1,9 @@
+{
+	"filelist": {
+		"jcr:primaryType": "nt:unstructured",
+		"sling:resourceType": "aempoc/components/content/filelist"
+	},
+	"dam": {
+		"jcr:primaryType": "nt:unstructured"
+	}
+}

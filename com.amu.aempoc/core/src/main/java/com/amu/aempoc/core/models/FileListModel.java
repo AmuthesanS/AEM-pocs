@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.Default;
@@ -38,7 +39,7 @@ public class FileListModel {
 				Asset currentAsset = resource.adaptTo(Asset.class);
 				String title = currentAsset.getMetadataValue("dc:title");
 				char assetStartChar;
-				if (title != null) {
+				if (StringUtils.isNotBlank(title)) {
 					assetStartChar = title.toLowerCase().charAt(0);
 				} else {
 					assetStartChar = resource.getName().toLowerCase().charAt(0);
@@ -57,7 +58,7 @@ public class FileListModel {
 		if (assetList.get(assetStartChar) != null) {
 			list = assetList.get(assetStartChar);
 		} else {
-			Comparator<Asset> assetNameComparator = Comparator.comparing(Asset::getName);
+			Comparator<Asset> assetNameComparator = Comparator.comparing(Asset::getName, String.CASE_INSENSITIVE_ORDER);
 			list = new TreeSet<>(assetNameComparator);
 		}
 		list.add(currentAsset);
